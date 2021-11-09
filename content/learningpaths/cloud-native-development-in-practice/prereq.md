@@ -103,30 +103,30 @@ understand without experience of such an environment.
 
 Following are the tools you need to run the labs:
 
--   Git command line client:
+-   [Git command line](https://git-scm.com/) client:
     If you are using GUI clients,
     beware the lab instructions will use the command line.
 
--   Bash shell:
+-   [Bash shell](https://www.gnu.org/software/bash/)
     MacOS or Linux preferred,
-    but Windows Subsystem for Linux (WSL) should work OK too.
+    but [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install) (WSL) should work OK too.
 
 -   A Java Interactive Development Environment (IDE):
-    IntelliJ is preferred, but Eclipse and Visual Studio Code with
-    Java and Spring extensions should work fine too.
+    [IntelliJ](https://www.jetbrains.com/idea/) is preferred, but [Eclipse](https://www.eclipse.org/) and [Visual Studio Code](https://code.visualstudio.com/) with
+    [Java and Spring extensions](https://code.visualstudio.com/docs/java/extensions) should work fine too.
 
--   Java Development Kit version 11
+-   [Java Development Kit (JDK) version 11](https://jdk.java.net/11/)
 
--   Docker:
+-   [Docker](https://www.docker.com/):
     Will be used to run a load injector,
     and may also be used to run MySQL on your local workstation.
 
--   MySQL Server 8+:
+-   [MySQL](https://dev.mysql.com/) Server 8+:
     You can run MySQL locally,
     but running via Docker will likely be a more convenient installation.
-    Note that MariaDB 10+ is an acceptable alternative to MySQL 8+, and
+    Note that [MariaDB](https://mariadb.org/) 10+ is an acceptable alternative to MySQL 8+, and
     the lab instructions should work equally well with MariaDB.
 
--   *Tanzu Application Service* command line client `cf` cli
+-   *Tanzu Application Service* `cf` [Command Line Interface](https://docs.cloudfoundry.org/cf-cli/install-go-cli.html) (CLI) 
 
--   Flyway command line
+-   [Flyway](https://flywaydb.org/documentation/usage/commandline/) Command-line tool
