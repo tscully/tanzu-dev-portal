@@ -891,6 +891,7 @@ HttpSession
 HumanOps
 Huynh
 HyperKit
+Hyperkit
 ℹ
 (I|P)aaS
 i7
