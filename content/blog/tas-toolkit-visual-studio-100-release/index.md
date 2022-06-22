@@ -7,8 +7,6 @@ date: '2022-06-22'
 publishDate: '2022-06-22'
 ---
 
-# Announcing General Availability of Tanzu Toolkit for Visual Studio
-
 We're pleased to announce that the Tanzu Toolkit for Visual Studio is now generally available. [Tanzu Toolkit for Visual Studio](https://github.com/vmware-tanzu/tanzu-toolkit-for-visual-studio) is an extension for Visual Studio 2019 and 2022 that enables users of Tanzu Application Service ("TAS") or other Cloud Foundry distributions to manage applications directly from within Visual Studio IDE.
 
 ## Why release this extension?
