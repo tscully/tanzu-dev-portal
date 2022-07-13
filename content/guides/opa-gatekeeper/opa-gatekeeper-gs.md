@@ -12,11 +12,11 @@ team:
 -
 ---
 
-### What Is Opa Gatekeeper?
+## What Is Opa Gatekeeper?
 
 ...
 
-### Before You Begin
+## Before You Begin
 
 There are a few things you need to do before getting started with Opa Gatekeeper:
 
@@ -24,7 +24,7 @@ There are a few things you need to do before getting started with Opa Gatekeeper
 
 - Step 2
 
-### Using Opa Gatekeeper
+## Using Opa Gatekeeper
 
 #### Detail 1
 
