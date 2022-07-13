@@ -374,7 +374,127 @@ spec:
       - key: stage
 ```
 
+## Checking the status of constraints
 
+One thing to note is that once a constraint has been put in place, using `kubectl describe` will show violation so the constraint by objects that already ecist in the cluster.
+
+The existing objects will not be affected, for example a running pod that violates a constraint will not be evicted, but updates to those objects will fail.  For example in the cluster deployed earlier:
+
+```
+(⎈ |kind-opa-guide:default)➜  kubectl describe  constraint all-ns-must-have-owner-label
+Name:         all-ns-must-have-owner-label
+Namespace:
+Labels:       <none>
+Annotations:  <none>
+API Version:  constraints.gatekeeper.sh/v1beta1
+Kind:         K8sRequiredLabels
+Metadata:
+  Creation Timestamp:  2022-07-13T12:14:32Z
+  Generation:          1
+  Managed Fields:
+    API Version:  constraints.gatekeeper.sh/v1beta1
+    Fields Type:  FieldsV1
+    fieldsV1:
+      f:status:
+    Manager:      gatekeeper
+    Operation:    Update
+    Subresource:  status
+    Time:         2022-07-13T12:14:32Z
+    API Version:  constraints.gatekeeper.sh/v1beta1
+    Fields Type:  FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:annotations:
+          .:
+          f:kubectl.kubernetes.io/last-applied-configuration:
+      f:spec:
+        .:
+        f:match:
+          .:
+          f:kinds:
+        f:parameters:
+          .:
+          f:labels:
+          f:message:
+    Manager:         kubectl-client-side-apply
+    Operation:       Update
+    Time:            2022-07-13T12:14:32Z
+  Resource Version:  28190
+  UID:               e1584a76-2a12-43c1-a9a6-dfa677c62de5
+Spec:
+  Match:
+    Kinds:
+      API Groups:
+
+      Kinds:
+        Namespace
+  Parameters:
+    Labels:
+      Key:    owner
+    Message:  All namespaces must have an `owner` label
+Status:
+  Audit Timestamp:  2022-07-13T14:44:37Z
+  By Pod:
+    Constraint UID:       e1584a76-2a12-43c1-a9a6-dfa677c62de5
+    Enforced:             true
+    Id:                   gatekeeper-audit-6d9c86d658-47krm
+    Observed Generation:  1
+    Operations:
+      audit
+      status
+    Constraint UID:       e1584a76-2a12-43c1-a9a6-dfa677c62de5
+    Enforced:             true
+    Id:                   gatekeeper-controller-manager-7f66c8bb65-65v89
+    Observed Generation:  1
+    Operations:
+      mutation-webhook
+      webhook
+  Total Violations:  8
+  Violations:
+    Enforcement Action:  deny
+    Kind:                Namespace
+    Message:             All namespaces must have an `owner` label
+    Name:                tkg-system
+    Enforcement Action:  deny
+    Kind:                Namespace
+    Message:             All namespaces must have an `owner` label
+    Name:                gatekeeper-system
+    Enforcement Action:  deny
+    Kind:                Namespace
+    Message:             All namespaces must have an `owner` label
+    Name:                tanzu-package-repo-global
+    Enforcement Action:  deny
+    Kind:                Namespace
+    Message:             All namespaces must have an `owner` label
+    Name:                local-path-storage
+    Enforcement Action:  deny
+    Kind:                Namespace
+    Message:             All namespaces must have an `owner` label
+    Name:                kube-public
+    Enforcement Action:  deny
+    Kind:                Namespace
+    Message:             All namespaces must have an `owner` label
+    Name:                kube-system
+    Enforcement Action:  deny
+    Kind:                Namespace
+    Message:             All namespaces must have an `owner` label
+    Name:                default
+    Enforcement Action:  deny
+    Kind:                Namespace
+    Message:             All namespaces must have an `owner` label
+    Name:                kube-node-lease
+Events:                  <none>
+
+```
+
+You can see in the violations section above, that a number of exisitng namespaces do not have the owner label set, as required by the constriant.
+
+If you attempt to update the namespace the update will fail until the constraint is met.
+
+```
+(⎈ |kind-opa-guide:default)➜  policy k edit namespace default
+error: namespaces "default" could not be patched: admission webhook "validation.gatekeeper.sh" denied the request: [all-ns-must-have-owner-label] All namespaces must have an `owner` label
+```
 
 
 
