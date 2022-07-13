@@ -52,7 +52,7 @@ If the request successfully completes the above stages, the changes specified in
  
 Policy decisions like those defined in OPA are implemented at the admission control stage, and the OPA project provides an admission controller plugin called Gatekeeper to perform this function in a Kubernetes cluster.
  
-Admission control in Kubernetes is dynamically extensible using webhooks, so that once Gatekeeper is deployed and running in a cluster, each request to the Kuberentes API will be validated against an OPA rules that in place, without having to reconfigure the Kubernetes API itself.  This is managed by Gatekeeper registering with the Kuberentes API as a validating and mutuating webhook. 
+Admission control in Kubernetes is dynamically extensible using webhooks, so that once Gatekeeper is deployed and running in a cluster, each request to the Kuberentes API will be validated against an OPA rules that in place, without having to reconfigure the Kubernetes API itself.  This is managed by Gatekeeper registering with the Kuberentes API as a validating and mutating webhook. 
  
 See https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/ for more details on dynamic admission control.
 
@@ -64,7 +64,7 @@ You can learn much more about TCE here:  https://tanzucommunityedition.io/
 
 This guide will use a TCE unmanaged cluster to show OPA Gatekeeper on a cluster running locally on a laptop.  You can also deploy TCE on public cloud infrastructure or in an on-premises environment.
 
-OPA Gatekeeper can be deployed on any Kuberentes cluster.  TCE clusters and other Tanzu Kubernetes clusters use an additional contoller to help with deploying software, and introduce the concept of a package to help with managing the lifecylce of software.  You can read more about packages here:  https://tanzucommunityedition.io/packages/
+OPA Gatekeeper can be deployed on any Kuberentes cluster.  TCE clusters and other Tanzu Kubernetes clusters use an additional controller to help with deploying software, and introduce the concept of a package to help with managing the lifecycle of software.  You can read more about packages here:  https://tanzucommunityedition.io/packages/
 
 
 ## Using OPA Gatekeeper
@@ -72,7 +72,7 @@ OPA Gatekeeper can be deployed on any Kuberentes cluster.  TCE clusters and othe
 
 ## Set up a TCE unmanaged cluster
 
-Complete pre-requisites and setup for TCE on your prefereed operating system can be found here:  https://tanzucommunityedition.io/docs/v0.12/installation-planning/
+Complete prerequisites and setup for TCE on your preferred operating system can be found here:  https://tanzucommunityedition.io/docs/v0.12/installation-planning/
 
 Once your environment is setup, you can run the following steps:
 
@@ -140,7 +140,7 @@ gatekeeper  gatekeeper.community.tanzu.vmware.com  3.7.1            Reconcile su
 
 ## Using Gatekeeper
 
-Now that Gatekeeper has been installed, there are some new componments running in the cluster.  You can exampine the content of the ```gatekeeper-system``` namespace:
+Now that Gatekeeper has been installed, there are some new components running in the cluster.  You can examine the content of the ```gatekeeper-system``` namespace:
 
 ```
 (⎈ |kind-opa-guide:default)➜  ~ kubectl -n gatekeeper-system get deployments,services
@@ -171,7 +171,7 @@ Using the `constrainttemplates.templates.gatekeeper.sh` CRD you can create gener
 
 Once you have created a template, you can create specific constraint instances for each use-case you want to define. 
 
-### Creating a contriant template
+### Creating a constriant template
 
 As an example of constraint templates, the cluster admin can create a template to require labels on objects.
 
@@ -331,7 +331,7 @@ Error from server ([all-ns-must-have-owner-label] All namespaces must have an `o
 
 You can see the contraint created earlier is violated, and creation of the object is denied.
 
-Modifiying the YAML as shown here and attempting to create with the label added:
+Modifying the YAML as shown here and attempting to create with the label added:
 
 ```
 apiVersion: v1
@@ -352,11 +352,11 @@ NAME       STATUS   AGE
 test-opa   Active   17s
 ```
 
-## Adding another contraint using the same template
+## Adding another constraint using the same template
 
-Once a contraint template exists, it can be used for multiple use-cases.  
+Once a constraint template exists, it can be used for multiple use-cases.  
 
-For example, this constaint would check that a label named `stage` is set on any pod spec that is sent to the Kubernetes API:
+For example, this constraint would check that a label named `stage` is set on any pod spec that is sent to the Kubernetes API:
 
 ```
 apiVersion: constraints.gatekeeper.sh/v1beta1
