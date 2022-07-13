@@ -7,12 +7,12 @@ lastmod: "2022-07-13"
 level1:
 level2:
 tags:
-- Kuberenetes
+- Kubernetes
 - Security
 # Author(s)
 team:
-- Tony Scully
 - Tiffany Jernigan
+- Tony Scully
 topics:
 - Kubernetes
 ---
@@ -23,7 +23,7 @@ Open Policy Agent (OPA) is an Open Source Software project which is managed by t
  
 OPA is a general purpose policy engine, which allows for unified policy enforcement across platforms and across the software stack.  OPA uses a high-level declarative language that lets you specify policy-as-code and APIs to offload policy decision-making from your software, providing a clear separation of concerns.
  
-In OPA a policy is a set of rules that govern the behaviour of a software service.  Policies can be used to encode information about how to comply with legal requirements, work within specific technical constraints, and to ensure consistency across releases and across platform instances.
+In OPA a policy is a set of rules that govern the behavior of a software service.  Policies can be used to encode information about how to comply with legal requirements, work within specific technical constraints, and to ensure consistency across releases and across platform instances.
  
 There are multiple ways to set up the type of controls that policy can be used to define, but as with security in general, it is useful to be able to apply controls in layers, so that the failure of misconfiguration of one layer does not lead to an enforcement failure.
 
@@ -52,19 +52,19 @@ If the request successfully completes the above stages, the changes specified in
  
 Policy decisions like those defined in OPA are implemented at the admission control stage, and the OPA project provides an admission controller plugin called Gatekeeper to perform this function in a Kubernetes cluster.
  
-Admission control in Kubernetes is dynamically extensible using webhooks, so that once Gatekeeper is deployed and running in a cluster, each request to the Kuberentes API will be validated against an OPA rules that in place, without having to reconfigure the Kubernetes API itself.  This is managed by Gatekeeper registering with the Kuberentes API as a validating and mutating webhook. 
+Admission control in Kubernetes is dynamically extensible using webhooks, so that once Gatekeeper is deployed and running in a cluster, each request to the Kubernetes API will be validated against an OPA rules that in place, without having to reconfigure the Kubernetes API itself.  This is managed by Gatekeeper registering with the Kubernetes API as a validating and mutating webhook. 
  
 See https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/ for more details on dynamic admission control.
 
 ## What is VMware Tanzu Community Edition
 
-VMware Tanzu Community Edition (TCE) is a full-featured, easy-to-manage Kubernetes platform for learners and users, especially those working in small-scale or preproduction environments.
+VMware Tanzu Community Edition (TCE) is a full-featured, easy-to-manage Kubernetes platform for learners and users, especially those working in small-scale or pre production environments.
 
 You can learn much more about TCE here:  https://tanzucommunityedition.io/
 
 This guide will use a TCE unmanaged cluster to show OPA Gatekeeper on a cluster running locally on a laptop.  You can also deploy TCE on public cloud infrastructure or in an on-premises environment.
 
-OPA Gatekeeper can be deployed on any Kuberentes cluster.  TCE clusters and other Tanzu Kubernetes clusters use an additional controller to help with deploying software, and introduce the concept of a package to help with managing the lifecycle of software.  You can read more about packages here:  https://tanzucommunityedition.io/packages/
+OPA Gatekeeper can be deployed on any Kubernetes cluster.  TCE clusters and other Tanzu Kubernetes clusters use an additional controller to help with deploying software, and introduce the concept of a package to help with managing the lifecycle of software.  You can read more about packages here:  https://tanzucommunityedition.io/packages/
 
 
 ## Using OPA Gatekeeper
@@ -171,7 +171,7 @@ Using the `constrainttemplates.templates.gatekeeper.sh` CRD you can create gener
 
 Once you have created a template, you can create specific constraint instances for each use-case you want to define. 
 
-### Creating a constriant template
+### Creating a constraint template
 
 As an example of constraint templates, the cluster admin can create a template to require labels on objects.
 
@@ -185,7 +185,7 @@ You can see the general structure of the template in the YAML below.  The spec c
 
 
 In the ‘targets’ section, you can see who the template refers to the Kuberentes specification of the resources to be reviewed by the policy, in this case `object.metadata.labels`.  
-You can define the message that you want to be reported if the contraint is violated in the template.
+You can define the message that you want to be reported if the constraint is violated in the template.
 
 ```
 -
@@ -264,7 +264,7 @@ spec:
 Applying the YAML above to the cluster created earlier:
 
 ```
-(⎈ |kind-opa-guide:default)➜  ~ kubectl apply -f example-contraint-template.yaml
+(⎈ |kind-opa-guide:default)➜  ~ kubectl apply -f example-constraint-template.yaml
 constrainttemplate.templates.gatekeeper.sh/k8srequiredlabels created
 ```
 
@@ -276,9 +276,9 @@ NAME                AGE
 k8srequiredlabels   64s
 ```
 
-Next, you need to create a specific contraint to be applied.
+Next, you need to create a specific constraint to be applied.
 
-In this case, the contraint defines that any `namespace` objects that are created must have a value set for the `owner` label.  The YAML is should below:
+In this case, the constraint defines that any `namespace` objects that are created must have a value set for the `owner` label.  The YAML is should below:
 
 ```
 apiVersion: constraints.gatekeeper.sh/v1beta1
@@ -296,7 +296,7 @@ spec:
       - key: owner
 ```
 
-When this is applied, we can see a sepcific instance of the contraint template `K8sRequiredLabels` is created:
+When this is applied, we can see a specific instance of the constraint template `K8sRequiredLabels` is created:
 
 ```
 (⎈ |kind-opa-guide:default)➜  ~ kubectl apply -f example-constraint-instance.yaml
@@ -329,7 +329,7 @@ If you now apply this to the cluster:
 Error from server ([all-ns-must-have-owner-label] All namespaces must have an `owner` label): error when creating "test-opa.yaml": admission webhook "validation.gatekeeper.sh" denied the request: [all-ns-must-have-owner-label] All namespaces must have an `owner` label
 ```
 
-You can see the contraint created earlier is violated, and creation of the object is denied.
+You can see the constraint created earlier is violated, and creation of the object is denied.
 
 Modifying the YAML as shown here and attempting to create with the label added:
 
@@ -376,7 +376,7 @@ spec:
 
 ## Checking the status of constraints
 
-One thing to note is that once a constraint has been put in place, using `kubectl describe` will show violation so the constraint by objects that already ecist in the cluster.
+One thing to note is that once a constraint has been put in place, using `kubectl describe` will show violation of the constraint by objects that already exist in the cluster.
 
 The existing objects will not be affected, for example a running pod that violates a constraint will not be evicted, but updates to those objects will fail.  For example in the cluster deployed earlier:
 
@@ -487,9 +487,9 @@ Events:                  <none>
 
 ```
 
-You can see in the violations section above, that a number of exisitng namespaces do not have the owner label set, as required by the constriant.
+You can see in the violations section above, that a number of existing namespaces do not have the owner label set, as required by the constraint.
 
-If you attempt to update the namespace the update will fail until the constraint is met.
+If you attempt to make an update to the namespace this will fail until the constraint (setting a value for the owner label) is met.
 
 ```
 (⎈ |kind-opa-guide:default)➜  policy k edit namespace default
