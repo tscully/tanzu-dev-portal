@@ -17,32 +17,40 @@ topics:
 - Kubernetes
 ---
 
+## Introduction
+
+As the use of Kubernetes and other Cloud Native platforms grows, there is an increasing requirement to ensure that the clusters and the workloads they run are in compliance with legal requirements, in complaince with organisational roles, work within specific technical constraints, and are consistent across releases and across platform instances.
+
+One of the tools that can be used for this assurance is the Open Policy Agent (OPA).
 ## What Is OPA?
 
 Open Policy Agent (OPA) is an Open Source Software project which is managed by the Cloud Native Computing Foundation (CNCF).  OPA has reached ‘graduated’ maturity level in the CNCF landscape.
  
 OPA is a general purpose policy engine, which allows for unified policy enforcement across platforms and across the software stack.  OPA uses a high-level declarative language that lets you specify policy-as-code and APIs to offload policy decision-making from your software, providing a clear separation of concerns.
  
-In OPA a policy is a set of rules that govern the behavior of a software service.  Policies can be used to encode information about how to comply with legal requirements, work within specific technical constraints, and to ensure consistency across releases and across platform instances.
- 
-There are multiple ways to set up the type of controls that policy can be used to define, but as with security in general, it is useful to be able to apply controls in layers, so that the failure of misconfiguration of one layer does not lead to an enforcement failure.
+In OPA a policy is a set of rules that govern the behavior of a software service.  Policies can be used to encode information about how to achieve compliance with these rules, and to define an action to take when these rules are violated.
 
-OPA policies are created in a declarative domain specific language called Rego. Rego is a declarative language for defining queries, so you can focus on the value returned by the queries rather tna on how the query is executed.
+There are often multiple ways to build the type of controls that policy can be used to define, but as with security in general, it is useful to be able to apply controls in layers, so that the failure of misconfiguration of one layer does not lead to an enforcement failure.
 
-Rego is based on the Datalog language and extends datalog to structured document formats like YAML or JSON..  Rego queries are assertions on data that is stored in OPA. These queries can be used to define policies that enumerate instances of data that violate the expected state of the system, for example a query could check that a particular field in a YAML document has been set to one of a range of acceptable values.
+OPA policies are created in a domain specific language called Rego. Rego is a declarative language for defining queries, so you can focus on the value returned by the queries rather than on how the query is executed.
+
+Rego is based on the Datalog language and extends Datalog to structured document formats like YAML or JSON.  Rego queries are assertions on data that is stored in OPA. These queries can be used to define policies that enumerate instances of data that violate the expected state of the system, for example a query could check that a particular field in a YAML document has been set to one of a range of acceptable values.
  
 Here are some useful resources for learning and understanding Rego:
 - Rego Documentation: https://www.openpolicyagent.org/docs/latest/policy-language/
 - Rego playground to develop and test queries:  https://play.openpolicyagent.org/
 - Testing locally using the `conftest` tool:  https://github.com/open-policy-agent/conftest
 - Developing policies:  https://tanzu.vmware.com/developer/guides/platform-security-opa/
+
+It is useful to understand the Rego language, but you can get started with OPA using the examples provided by the project, which cover a lot of use-cases.
+
 ## What is Gatekeeper?
  
-Gatekeeper is a specialized implementation of OPA that provides integration with Kubernetes using dynamic admission control and custom resource definitions to allow the Kubernetes cluster administrator and other users to create policy templates and specific policy instances, as outlined below.
+Gatekeeper is a specialized implementation of OPA that provides integration with Kubernetes using *Dynamic Admission Control* and custom resource definitions to allow the Kubernetes cluster administrator and other users to create policy templates and specific policy instances, as outlined below.
  
 ## What is admission control?
  
-In Kubernetes, OPA policies are evaluated at the Admission control phase of a request being processed by the Kubernetes API.  Generally requests to the Kubernetes API go through three broad phases before they are accepted or rejected:
+In Kubernetes, OPA policies are evaluated at the Admission Control phase of a request being processed by the Kubernetes API.  Generally requests to the Kubernetes API go through three broad phases before they are accepted or rejected:
  
 - **Authentication** - checking the identity of the user or service making the request, for example by presenting a valid token to the API
 - **Authorization** - checking that the identity has the required access to perform the request, for example has appropriate role bound
@@ -52,35 +60,34 @@ If the request successfully completes the above stages, the changes specified in
  
 Policy decisions like those defined in OPA are implemented at the admission control stage, and the OPA project provides an admission controller plugin called Gatekeeper to perform this function in a Kubernetes cluster.
  
-Admission control in Kubernetes is dynamically extensible using webhooks, so that once Gatekeeper is deployed and running in a cluster, each request to the Kubernetes API will be validated against an OPA rules that in place, without having to reconfigure the Kubernetes API itself.  This is managed by Gatekeeper registering with the Kubernetes API as a validating and mutating webhook. 
+The Kubernetes API has a number of compiled-in admission controllers, for example the controllers that implement LimitRange and ResourceQuota, but admission control in Kubernetes is also dynamically extensible using webhooks.
+
+ This means that once Gatekeeper is deployed and running in a cluster, each request to the Kubernetes API will be evaluated against an OPA rules that have been specified, without having to reconfigure the Kubernetes API itself.  This is managed by Gatekeeper registering with the Kubernetes API as both a validating webhook and a mutating webhook. 
  
 See https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/ for more details on dynamic admission control.
 
-## What is VMware Tanzu Community Edition
+## What is VMware Tanzu Community Edition?
 
 VMware Tanzu Community Edition (TCE) is a full-featured, easy-to-manage Kubernetes platform for learners and users, especially those working in small-scale or pre production environments.
 
-You can learn much more about TCE here:  https://tanzucommunityedition.io/
-
-This guide will use a TCE unmanaged cluster to show OPA Gatekeeper on a cluster running locally on a laptop.  You can also deploy TCE on public cloud infrastructure or in an on-premises environment.
-
-OPA Gatekeeper can be deployed on any Kubernetes cluster.  TCE clusters and other Tanzu Kubernetes clusters use an additional controller to help with deploying software, and introduce the concept of a package to help with managing the lifecycle of software.  You can read more about packages here:  https://tanzucommunityedition.io/packages/
-
+You can learn much more about TCE and how to get started with Tanzu here: https://tanzucommunityedition.io/
 
 ## Using OPA Gatekeeper
 
+This guide will use a TCE unmanaged cluster to show OPA Gatekeeper deployed on a cluster that is running locally on a laptop.  You can also deploy TCE on public cloud infrastructure or in an on-premises environment.
+
+OPA Gatekeeper can be deployed on any Kubernetes cluster.  TCE clusters and other Tanzu Kubernetes clusters use an additional controller to help with deploying software, and introduce the concept of a `package` to help with managing the lifecycle of the packaged software.  You can read more about packages here:  https://tanzucommunityedition.io/packages/
 
 ## Set up a TCE unmanaged cluster
 
-Complete prerequisites and setup for TCE on your preferred operating system can be found here:  https://tanzucommunityedition.io/docs/v0.12/installation-planning/
+The complete prerequisites and setup guide for TCE on your preferred operating system can be found here:  https://tanzucommunityedition.io/docs/v0.12/installation-planning/
 
 Once your environment is setup, you can run the following steps:
-
 
 ### Deploy an unmanaged cluster
 
 ```
-tanzu um create opa-guide
+tanzu unmanaged-cluster create opa-guide
 ```
 
 ### List available packages
@@ -120,7 +127,6 @@ The output will be similar to the following:
 ### Install the OPA Gatekeeper package. 
 
 The `install` verb requires the name and version of the package as shown here:
-
 ```
 tanzu package install gatekeeper --package-name gatekeeper.community.tanzu.vmware.com --version 3.7.1
 ```
@@ -130,7 +136,7 @@ tanzu package install gatekeeper --package-name gatekeeper.community.tanzu.vmwar
 ```
 tanzu package installed list
 ```
-The output should be similar to:
+The output should be similar to the following:
 
 ```
 NAME        PACKAGE-NAME                           PACKAGE-VERSION  STATUS
@@ -151,6 +157,13 @@ deployment.apps/gatekeeper-controller-manager   1/1     1            1          
 NAME                                 TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)   AGE
 service/gatekeeper-webhook-service   ClusterIP   10.96.212.9   <none>        443/TCP   65m
 ```
+
+These two deployments create the pods that run the Gatekeeper controllers.
+
+- **gatekeeper-controller-manager** implements the webhooks that the Kubernetes API will call for validation and mutation
+- **gatekeeper-audit** checks for policy compliance on objects that already exist in the cluster
+
+
 
 And also see these new customer resource definitions that have been created in the cluster:
 ```
@@ -499,3 +512,26 @@ error: namespaces "default" could not be patched: admission webhook "validation.
 
 
 
+## Use Cases and Examples
+
+Now you have seen the basic structure of a constaint template and how you can create specific constraints from thet template, you can looks at futher examples and use-cases:
+
+Uses-cases could include:
+
+- enforcing a minimum number of replicas on each deployment
+- enforcing the use of a SHA in image references rather than the use of a tag
+- enforcing the setting of requests and limits for containers in pod specifications
+- implement a denylist for disallowed registries
+
+Thera are many examples in the Gatekeeper library, here:  https://github.com/open-policy-agent/gatekeeper-library/tree/master/library/general
+
+This is also a great resource for learning about OPA and Gatekeeper.
+
+## Observing OPA
+
+Prometheus metrics
+https://open-policy-agent.github.io/gatekeeper/website/docs/metrics
+
+## Toubleshooting
+
+Audit logging
