@@ -19,7 +19,7 @@ topics:
 
 ## Introduction
 
-As the use of Kubernetes and other Cloud Native platforms grows, there is an increasing requirement to ensure that the clusters and the workloads they run are in compliance with legal requirements, in complaince with organisational roles, work within specific technical constraints, and are consistent across releases and across platform instances.
+As the use of Kubernetes and other Cloud Native platforms grows, there is an increasing requirement to ensure that the clusters and the workloads they run are in compliance with legal requirements, in compliance with organizational roles, work within specific technical constraints, and are consistent across releases and across platform instances.
 
 One of the tools that can be used for this assurance is the Open Policy Agent (OPA).
 ## What Is OPA?
@@ -509,12 +509,18 @@ If you attempt to make an update to the namespace this will fail until the const
 error: namespaces "default" could not be patched: admission webhook "validation.gatekeeper.sh" denied the request: [all-ns-must-have-owner-label] All namespaces must have an `owner` label
 ```
 
+## Testing Constraints
+
+Adding new constraint templates and new constraints will impact the cluster, and may produce unwanted side-effects, so testing is key.
+
+You can use the 'dry-run' capability by setting the `enforcementAction` property in the spec of the constraint to `dryrun`.  Violations will then be logged, but will not be denied by the admission controller.
+
+For further details see:  https://open-policy-agent.github.io/gatekeeper/website/docs/next/violations/#dry-run-enforcement-action
 
 
+## Use Cases and Further Examples
 
-## Use Cases and Examples
-
-Now you have seen the basic structure of a constaint template and how you can create specific constraints from thet template, you can looks at futher examples and use-cases:
+Now you have seen the basic structure of a constraint template and how you can create specific constraints from thet template, you can looks at further examples and use-cases:
 
 Uses-cases could include:
 
@@ -523,15 +529,24 @@ Uses-cases could include:
 - enforcing the setting of requests and limits for containers in pod specifications
 - implement a denylist for disallowed registries
 
-Thera are many examples in the Gatekeeper library, here:  https://github.com/open-policy-agent/gatekeeper-library/tree/master/library/general
+There are many examples in the Gatekeeper library, here:  https://github.com/open-policy-agent/gatekeeper-library/tree/master/library/general
 
 This is also a great resource for learning about OPA and Gatekeeper.
 
+
+
+
+
+
+
 ## Observing OPA
 
+Grafana Dashboards
 Prometheus metrics
 https://open-policy-agent.github.io/gatekeeper/website/docs/metrics
 
 ## Toubleshooting
 
+Tracing admission
 Audit logging
+
