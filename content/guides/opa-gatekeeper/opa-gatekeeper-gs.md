@@ -126,7 +126,7 @@ The output will be similar to the following:
 
 ### Install the OPA Gatekeeper package. 
 
-The `install` verb requires the name and version of the package as shown here:
+To deploy a package the tanzu CLI `install` verb requires the name and version of the package as shown here:
 ```
 tanzu package install gatekeeper --package-name gatekeeper.community.tanzu.vmware.com --version 3.7.1
 ```
@@ -274,7 +274,9 @@ spec:
 
 ```
 
-Applying the YAML above to the cluster created earlier:
+Save the above YAML in a file named example-constraint-template.yaml for the next step.
+
+Apply the YAML to the cluster created earlier:
 
 ```
 (⎈ |kind-opa-guide:default)➜  ~ kubectl apply -f example-constraint-template.yaml
@@ -308,8 +310,9 @@ spec:
     labels:
       - key: owner
 ```
+Save the above YAML in a file named example-constraint-instance.yaml for the next step.
 
-When this is applied, we can see a specific instance of the constraint template `K8sRequiredLabels` is created:
+When this is applied a specific instance of the constraint template `K8sRequiredLabels` is created:
 
 ```
 (⎈ |kind-opa-guide:default)➜  ~ kubectl apply -f example-constraint-instance.yaml
@@ -533,20 +536,54 @@ There are many examples in the Gatekeeper library, here:  https://github.com/ope
 
 This is also a great resource for learning about OPA and Gatekeeper.
 
+## Next Steps
+
+This guide is intended as an introduction to OPA and Gatekeeper.
+
+Using the information here and the refenences linked, you are now able to start the process of building a set of policies for your use-case, and be able to apply those policies consistently across all your Kubernetes clusters.
 
 
 
+##  TODO:  SECTIONS STILL TO ADD?
+
+## Using Mutation with Gatekeeper
+
+So far you have seen Gatekeeper acting a *validating* admission controller, that is, the Kubernetes API sends a request to the Gatekeeper endpoint to query the state of some value, and the response the query satisfies a constraint, or that the constraint is violated.
+
+Kubernetes also provides a mechanism where the admission contoller can *mutate* (that is, update) the contents of the request to the Kubernetes API in order to satisfy the constraint.
+
+Mutation of this sort can be a solution to the issue of having Kubernetes API requests rejected at the admission stage, which then requires the requesting entity to modify and re-submit the request.
+
+While this is true, the use of mutation should be carefully considered, as making changes to the request at admission time means that the spec of the resource that is created or updated in the cluster is not identical to what was specified in the initial request.  This can lead to configuration drift, for example if you are using source code control for the specification of your resources, the source code control system should be a single source of truth and should accurately reflect the running state of the cluster.
+
+The mutating webhook uses some of the other customer resources that were shown earlier in this guide.  They are shown below:
+
+```
+(⎈ |kind-opa-guide:default)➜  ~  kubectl get crd -l gatekeeper.sh/system=yes  |grep -i mutation
+assign.mutations.gatekeeper.sh                       2022-07-13T10:16:20Z
+assignmetadata.mutations.gatekeeper.sh               2022-07-13T10:16:21Z
+modifyset.mutations.gatekeeper.sh                    2022-07-13T10:16:20Z
+```
+The function of these CRDs is:
+
+- `AssignMetadata` - defines changes to the metadata section of a resource
+- `Assign` - any change outside the metadata section
+- `ModifySet` - adds or removes entries from a list, such as the arguments to a container
 
 
 
-## Observing OPA
+## Observing and Monitoring OPA
 
-Grafana Dashboards
-Prometheus metrics
+Metrics server deployment 
+Standard grafana dashboard for OPA 
+https://grafana.com/grafana/dashboards/13965
+
+Prometheus metrics and using an exporter
 https://open-policy-agent.github.io/gatekeeper/website/docs/metrics
 
-## Toubleshooting
+## Troubleshooting
 
+Checking Logs, what to look for
 Tracing admission
-Audit logging
+Audit logging and setting it up (this is probably a sepearte guide that we need)
 
